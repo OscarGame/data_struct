@@ -27,10 +27,10 @@ int main(int argc, char **argv)
     int array[SIZE] = {3, 5, 1, 8, 4, 6, 7, 2};
     print(array, SIZE);
     //straight_insert_sort(array, SIZE);
-    //select_sort(array, SIZE);
+    select_sort(array, SIZE);
     //bubble_sort(array, SIZE);
     //shells_sort(array, SIZE);
-    quick_sort(array, 0, SIZE-1);
+    //quick_sort(array, 0, SIZE-1);
     print(array, SIZE);
 }
 
@@ -62,34 +62,43 @@ void straight_insert_sort(int *array, int array_size)
     return;
 }
 
+// 找出array中index在[begin, end]范围内最小元素的index
+int scan_for_min(int *array, int begin, int end)
+{
+    int i;
+    int min_index = begin;
+
+    for (i=begin; i<=end; ++i)
+    {
+        if (array[min_index] > array[i])
+        {
+            min_index = i;
+        }
+    }
+
+    return min_index;
+}
+
+void swap(int *a, int *b)
+{
+    int tmp = *a;
+    *a = *b;
+    *b = tmp;
+}
 
 void select_sort(int *array, int array_size)
 {
-    int i, j, unsorted_first_index, unsorted_min_index;
-    int unsorted_min_element, tmp_element;
-    for (i=0; i<array_size; i++)
+    int min_index = 0;
+    int i = 0;
+
+    for (i=0; i<array_size; ++i)
     {
-        //保存未排序元素的起始index
-        unsorted_first_index = i;
+        // 找到array[i]~array[array_size-1]中的最小元
+        // 记录位置到min_index
+        min_index = scan_for_min(array, i, array_size-1);
 
-        // 找到未排序元素的最小元素
-        j = unsorted_first_index;
-        unsorted_min_element = array[j];
-        unsorted_min_index = j;
-        j++;
-        for (; j<array_size; j++)
-        {
-            if (unsorted_min_element > array[j])
-            {
-                unsorted_min_element = array[j];
-                unsorted_min_index = j;
-            }
-        }
-
-        // 将未排序元素的最小元素为未排序元素的第一个元素（即前面保存的最小index位置的元素）交换位置
-        tmp_element = array[unsorted_first_index];
-        array[unsorted_first_index] = unsorted_min_element;
-        array[unsorted_min_index] = tmp_element;
+        // 将上面找到的最小元与已排序部分的最后位置元素互换
+        swap(&array[i], &array[min_index]);
     }
 }
 
