@@ -3,40 +3,40 @@
 typedef struct _tree_node
 {
     element_type m_data;
-    struct _tree_node *left;
-    struct _tree_node *right;
+    struct _tree_node *m_left;
+    struct _tree_node *m_right;
 } tree_node;
 
 
-// 递归实现先序遍历, root, left, right
+// 递归实现先序遍历, root, m_left, m_right
 void preorder_traversal(tree_node *bt)
 {
     if (bt)
     {
         printf("%d", bt->data);
-        preorder_traversal(bt->left);
-        preorder_traversal(bt->right);
+        preorder_traversal(bt->m_left);
+        preorder_traversal(bt->m_right);
     }
 }
 
-// 递归实现中序遍历, left, root, right
+// 递归实现中序遍历, m_left, root, m_right
 void inorder_traversal(tree_node *bt)
 {
     if (bt)
     {
-        inorder_traversal(bt->left);
+        inorder_traversal(bt->m_left);
         printf("%d", bt->data);
-        inorder_traversal(bt->right);
+        inorder_traversal(bt->m_right);
     }
 }
 
-// 递归实现后序遍历, left, right, root
+// 递归实现后序遍历, m_left, m_right, root
 void postorder_traversal(tree_node *bt)
 {
     if (bt)
     {
-        postorder_traversal(bt->left);
-        postorder_traversal(bt->right);
+        postorder_traversal(bt->m_left);
+        postorder_traversal(bt->m_right);
         printf("%d", bt->data);
     }
 }
@@ -55,14 +55,14 @@ void inorder_traversal_norecurse(tree_node *bt)
         while (t) // 一直向左，并将沿途结点压栈
         {
             push(s, t); // 第一次碰到该结点
-            t = t->left;
+            t = t->m_left;
         }
 
         if (!is_empty(s))
         {
             t = pop(s); // 结点出栈，第二次碰到该几点
             printf("%d", t->data); // 访问出栈结点
-            t = t->right; // 转向右子树
+            t = t->m_right; // 转向右子树
         }
     }
 }
@@ -77,13 +77,13 @@ void preorder_traversal_norecurse(tree_node *bt)
         {
             push(s, t); // 第一次碰到该结点
             printf("%d", t->data); // 访问出栈结点
-            t = t->left;
+            t = t->m_left;
         }
 
         if (!is_empty(s))
         {
             t = pop(s); // 结点出栈，第二次碰到该几点
-            t = t->right; // 转向右子树
+            t = t->m_right; // 转向右子树
         }
     }
 }
@@ -107,19 +107,19 @@ void levelorder_traversal(tree_node *bt)
     {
         t = delete_q(q);
         printf("%d", t->data); // 访问取出队列的结点
-        if (t->left)
+        if (t->m_left)
         {
-            add_q(q, t->left);
+            add_q(q, t->m_left);
         }
-        if (t->right)
+        if (t->m_right)
         {
-            add_q(q, t->right);
+            add_q(q, t->m_right);
         }
     }
 }
 
 // 二叉搜索树(二叉查找树, 二叉排序树)
-// left < root < right
+// m_left < root < m_right
 
 position find(element_type x, tree_node *bst)
 {
@@ -130,11 +130,11 @@ position find(element_type x, tree_node *bst)
 
     if (x > bst->data)
     {
-        return find(x, bst->right);
+        return find(x, bst->m_right);
     }
     else if (x < bst->data)
     {
-        return find(x, bst->left);
+        return find(x, bst->m_left);
     }
     else
     {
@@ -154,11 +154,11 @@ position iter_find(element_type x, tree_node *bst)
     {
         if (x > bst->data)
         {
-            bst = bst->right;
+            bst = bst->m_right;
         }
         else if (x < bst->data)
         {
-            bst = bst->left;
+            bst = bst->m_left;
         }
         else
         {
@@ -177,9 +177,9 @@ position find_min(tree_node *bst)
         return NULL;
     }
 
-    if (bst->left)
+    if (bst->m_left)
     {
-        return find_min(bst->left);
+        return find_min(bst->m_left);
     }
 
     return bst;
@@ -193,9 +193,9 @@ position find_max(tree_node *bst)
         return NULL;
     }
 
-    while (bst->right)
+    while (bst->m_right)
     {
-        bst = bst->right;
+        bst = bst->m_right;
     }
 
     return bst;
@@ -207,17 +207,17 @@ tree_node *insert(element_type x, tree_node *bst)
     {
         bst = malloc(sizeof(struct tree_node));
         bst->data = x;
-        bst->left = bst->right = NULL;
+        bst->m_left = bst->m_right = NULL;
     }
     else
     {
         if (x < bst->data)
         {
-            bst->left = insert(x, bst->left);
+            bst->m_left = insert(x, bst->m_left);
         }
         else if (x > bst->data)
         {
-            bst->right = insert(x, bst->right);
+            bst->m_right = insert(x, bst->m_right);
         }
         // else X已经存在，什么都不做
     }
@@ -234,30 +234,30 @@ tree_node *delete(element_type x, tree_node *bst)
     }
     else if (x < bst->data)
     {
-        bst->left = delete(x, bst->left);
+        bst->m_left = delete(x, bst->m_left);
     }
     else if (x > bst->data)
     {
-        bst->right = delete(x, bst->right);
+        bst->m_right = delete(x, bst->m_right);
     }
     else // 找到要删除的结点
     {
-        if (bst->left && bst->right)
+        if (bst->m_left && bst->m_right)
         {
-            tmp = find_min(bst->right); // 找到右子树的最小结点（该结点肯定只有0或1个子结点）
+            tmp = find_min(bst->m_right); // 找到右子树的最小结点（该结点肯定只有0或1个子结点）
             bst->data = tmp->data;
-            bst->right = delete(bst->data, bst->right); // 删除右子树的最小结点
+            bst->m_right = delete(bst->data, bst->m_right); // 删除右子树的最小结点
         }
         else // 被删除结点只有0或1个子结点
         {
             tmp = bst;
-            if (!bst->left)
+            if (!bst->m_left)
             {
-                bst = bst->right;
+                bst = bst->m_right;
             }
-            else if (!bst->right)
+            else if (!bst->m_right)
             {
-                bst = bst->left;
+                bst = bst->m_left;
             }
 
             free(tmp);

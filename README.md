@@ -12,6 +12,7 @@ data_struct
 │   ├── list.h
 │   ├── makefile
 │   └── ut_list.c
+├── max_heap.c
 ├── max_sub_seq_sum.c
 ├── README.md
 └── sort.c
@@ -20,7 +21,8 @@ data_struct
 - [x] [linux循环链表学习](http://blog.csdn.net/wzzfeitian/article/details/7816614)，这是之前在csdn写的博客，记录了该实现的一些想法 ./list/
 - [ ] redis里面各种数据结构的实现
 - [x] 几种排序算法的实现（插入排序，选择排序，冒泡排序，希尔排序，快速排序） ./sort.c
-- [x] 最大子列和问题，./max_sub_seq_sum.c中使用了在线处理算法，时间复杂度为O(N)
-- [x] 增加二叉树的伪代码 ./bin_tree.c，简单描述了二叉树的常用操作
-- [x] 二叉搜索树的简单操作 ./bin_tree.c
-- [x] 增加二分查找的演示伪代码 ./binary_search.c
+- [x] 最大子列和问题，./max_sub_seq_sum.c中使用在线处理算法，时间复杂度为O(N)
+- [x] 二叉树伪代码实现 ./bin_tree.c，简单描述了二叉树的常用操作
+- [x] 二叉搜索树的简单操作伪代码实现 ./bin_tree.c
+- [x] 二分查找伪代码实现 ./binary_search.c
+- [x] 最大堆伪代码实现 ./max_heap.c
