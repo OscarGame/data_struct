@@ -4,15 +4,17 @@
  冒泡排序属于稳定的排序，时间复杂度为：O(N2)， 空间复杂度：O(1)
  希尔排序属于不稳定的排序，时间复杂度为：O(N2)， 空间复杂度：O(1)
  快速排序属于不稳定排序，时间复杂度为：O(N2)， 空间复杂度：O(1)
+ 归并排序属于稳定排序，时间复杂度O(NlogN), 空间复杂度: O(N)
  */
 
 #include <stdio.h>
+#include <stdlib.h>
 
 #define SIZE 8
 
 void print(int *array, int array_size);
 
-void straight_insert_sort(int *array, int array_size);
+void insert_sort(int *array, int array_size);
 
 void select_sort(int *array, int array_size);
 
@@ -22,15 +24,19 @@ void shells_sort(int *array, int array_size);
 
 void quick_sort(int *array, int start_index, int end_index);
 
+void merge_sort(int *array, int array_size);
+
 int main(int argc, char **argv)
 {
     int array[SIZE] = {3, 5, 1, 8, 4, 6, 7, 2};
+    int tmp_array[SIZE] = {};
     print(array, SIZE);
-    //straight_insert_sort(array, SIZE);
-    select_sort(array, SIZE);
-    //bubble_sort(array, SIZE);
+    // insert_sort(array, SIZE);
+    // select_sort(array, SIZE);
+    // bubble_sort(array, SIZE);
     //shells_sort(array, SIZE);
     //quick_sort(array, 0, SIZE-1);
+    merge_sort(array, SIZE);
     print(array, SIZE);
 }
 
@@ -44,19 +50,21 @@ void print(int *array, int array_size)
     printf("\n");
 }
 
-void straight_insert_sort(int *array, int array_size)
+void insert_sort(int *array, int array_size)
 {
     int *tmp = array;
     int i, j, num_to_insert;
     for (i=1; i<array_size; i++)
     {
-        num_to_insert = *(tmp+i);
-        j = i-1;
+        num_to_insert = *(tmp+i); // 下一个要插入的元素
+        j = i-1; // 已排序部分的最后一个元素
         while (j>=0 && num_to_insert<*(tmp+j))
         {
-            *(tmp+j+1) = *(tmp+j);
+            *(tmp+j+1) = *(tmp+j); // 元素后移
             j--;
         }
+
+        // 找到要插入的位置
         *(tmp+j+1) = num_to_insert;
     }
     return;
@@ -120,10 +128,11 @@ void bubble_sort(int *array, int array_size)
         {
             if (array[j+1] < array[j])
             {
-                tmp = array[j];
-                array[j] = array[j+1];
-                array[j+1] = tmp;
-                do_sort = TRUE;
+                swap(array+j, array+j+1);
+                // tmp = array[j];
+                // array[j] = array[j+1];
+                // array[j+1] = tmp;
+                do_sort = TRUE; // 如果一次循环中没有swap过，说明顺序已经排好
             }
         }
         if (FALSE == do_sort)
@@ -144,9 +153,7 @@ void shells_sort(int *array, int array_size)
         {
             if (array[i] > array[i+gap])
             {
-                tmp = array[i];
-                array[i] = array[i+gap];
-                array[i+gap] = tmp;
+                swap(array+i, array+i+gap);
             }
         }
         if (1 == gap)
@@ -196,4 +203,90 @@ void quick_sort(int *array, int start_index, int end_index)
             quick_sort(array, j+1, end_index);
         }
     }
+}
+
+
+// l为左边起始位置
+// r为右边起始位置
+// right_end为右边终点位置
+void merge(int *array, int *tmp_array, int l, int r, int right_end)
+{
+    int i = 0;
+    int left_end = r - 1; // 左边终点位置。假设左右两列挨着
+    int tmp = l; // 存放结果的数组的初始位置
+    int num_elements = right_end - l + 1;
+
+    while (l <= left_end && r <= right_end)
+    {
+        if (array[l] <= array[r])
+        {
+            tmp_array[tmp++] = array[l++];
+        }
+        else
+        {
+            tmp_array[tmp++] = array[r++];
+        }
+    }
+
+    while (l <= left_end)
+    {
+        tmp_array[tmp++] = array[l++];
+    }
+    while (r <= right_end)
+    {
+        tmp_array[tmp++] = array[r++];
+    }
+
+    // for (i = 0; i <= num_elements; i++, right_end--)
+    // {
+        // array[right_end] = tmp_array[right_end];
+    // }
+}
+
+// length 为当前有序子列的长度
+void merge_pass(int *array, int *tmp_array, int array_size, int length)
+{
+    int i = 0;
+    int j = 0;
+
+    for (i = 0; i <= array_size - 2*length; i += 2*length)
+    {
+        merge(array, tmp_array, i, i+length, i+2*length-1);
+    }
+
+    if (i+length < array_size) // 归并最后2个子列
+    {
+        merge(array, tmp_array, i, i+length, array_size-1);
+    }
+    else // 最后只剩1个子列
+    {
+        for (j = i; j < array_size; j++)
+        {
+            tmp_array[j] = array[j];
+        }
+    }
+}
+
+void merge_sort(int *array, int array_size)
+{
+    int *tmp_array = NULL;
+    int length = 1;
+
+    tmp_array = (int *)malloc(array_size * sizeof(int));
+    if (!tmp_array)
+    {
+        printf("空间不足");
+        return;
+    }
+
+    while (length < array_size)
+    {
+        merge_pass(array, tmp_array, array_size, length);
+        length *= 2;
+        merge_pass(tmp_array, array, array_size, length);
+        length *= 2;
+    }
+
+    free(tmp_array);
+    tmp_array = NULL;
 }
