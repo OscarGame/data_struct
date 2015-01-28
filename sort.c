@@ -3,8 +3,8 @@
  选择排序属于不稳定的排序，时间复杂度为：O(N2)， 空间复杂度：O(1)
  冒泡排序属于稳定的排序，时间复杂度为：O(N2)， 空间复杂度：O(1)
  希尔排序属于不稳定的排序，时间复杂度为：O(N2)， 空间复杂度：O(1)
- 快速排序属于不稳定排序，时间复杂度为：O(N2)， 空间复杂度：O(1)
  归并排序属于稳定排序，时间复杂度O(NlogN), 空间复杂度: O(N)
+ 快速排序属于不稳定排序，时间复杂度为：O(N2)， 空间复杂度：O(1)
  */
 
 #include <stdio.h>
@@ -35,8 +35,8 @@ int main(int argc, char **argv)
     // select_sort(array, SIZE);
     // bubble_sort(array, SIZE);
     //shells_sort(array, SIZE);
-    //quick_sort(array, 0, SIZE-1);
-    merge_sort(array, SIZE);
+    quick_sort(array, 0, SIZE-1);
+    // merge_sort(array, SIZE); 
     print(array, SIZE);
 }
 
@@ -184,17 +184,13 @@ void quick_sort(int *array, int start_index, int end_index)
             j--;
         if (i < j)
         {
-            int tmp = array[i];
-            array[i] = array[j];
-            array[j] = tmp;
+            swap(array+i, array+j);
             quick_sort(array, start_index, end_index);
         }
         else
         {
             // 交换后完成一次划分
-            int tmp = array[start_index];
-            array[start_index] = array[j];
-            array[j] = tmp;
+            swap(array+start_index, array+j);
 
             // 对划分左半部分进行排序
             quick_sort(array, start_index, j-1);
